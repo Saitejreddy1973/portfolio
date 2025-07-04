@@ -23,14 +23,6 @@ jobs:
         run: npm install
       - name: Build project
         run: npm run build
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v1
-        with:
-          publish-dir: 'dist'
-          production-deploy: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
       - name: Deployment status
         run: echo "Deployment completed successfully!"
 

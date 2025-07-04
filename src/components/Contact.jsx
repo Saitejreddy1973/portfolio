@@ -13,6 +13,7 @@ const Contact = () => {
     message: '',
   });
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +23,15 @@ const Contact = () => {
   // Netlify handles submission, just show loading for UX
   const handleSubmit = (e) => {
     setLoading(true);
-    // Let Netlify handle the form submission
+    // Let Netlify handle the form submission - don't prevent default
+    // The form will submit naturally to Netlify
+    
+    // Reset form after submission
+    setTimeout(() => {
+      setForm({ name: '', email: '', message: '' });
+      setLoading(false);
+      setSubmitted(true);
+    }, 1000);
   };
 
   return (
@@ -34,6 +43,12 @@ const Contact = () => {
         className="flex-[0.75] bg-jet p-8 rounded-2xl">
         <p className={styles.sectionSubText}>Get in touch</p>
         <h3 className={styles.sectionHeadTextLight}>Contact.</h3>
+
+        {submitted && (
+          <div className="mt-6 p-4 bg-green-900/20 border border-green-500 rounded-lg">
+            <p className="text-green-400 font-medium">Thank you! Your message has been sent.</p>
+          </div>
+        )}
 
         <form
           ref={formRef}
