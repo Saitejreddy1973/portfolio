@@ -93,6 +93,8 @@ const Navbar = () => {
             />
           )}
         </div> */}
+        
+        {/* mobile */}
       </div>
     </nav>
   );
