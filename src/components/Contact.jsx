@@ -14,24 +14,49 @@ const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  // Netlify handles submission, just show loading for UX
-  const handleSubmit = (e) => {
+  // Handle form submission with Netlify
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
     setLoading(true);
-    // Let Netlify handle the form submission - don't prevent default
-    // The form will submit naturally to Netlify
-    
-    // Reset form after submission
-    setTimeout(() => {
-      setForm({ name: '', email: '', message: '' });
+    setError('');
+
+    try {
+      // Create form data for Netlify
+      const formData = new FormData();
+      formData.append('form-name', 'contact');
+      formData.append('name', form.name);
+      formData.append('email', form.email);
+      formData.append('message', form.message);
+
+      // Submit to Netlify
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      if (response.ok) {
+        // Reset form after successful submission
+        setForm({ name: '', email: '', message: '' });
+        setSubmitted(true);
+        // Reset success message after 5 seconds
+        setTimeout(() => setSubmitted(false), 5000);
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setError('There was an error sending your message. Please try again.');
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 1000);
+    }
   };
 
   return (
@@ -47,6 +72,12 @@ const Contact = () => {
         {submitted && (
           <div className="mt-6 p-4 bg-green-900/20 border border-green-500 rounded-lg">
             <p className="text-green-400 font-medium">Thank you! Your message has been sent.</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-6 p-4 bg-red-900/20 border border-red-500 rounded-lg">
+            <p className="text-red-400 font-medium">{error}</p>
           </div>
         )}
 
