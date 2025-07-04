@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import emailjs from '@emailjs/browser';
 import { styles } from '../styles';
 import { SectionWrapper } from '../hoc';
 import { slideIn } from '../utils/motion';
@@ -17,46 +16,13 @@ const Contact = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setForm({ ...form, [name]: value });
   };
 
+  // Netlify handles submission, just show loading for UX
   const handleSubmit = (e) => {
-    e.preventDefault();
     setLoading(true);
-
-    // sign up on emailjs.com (select the gmail service and connect your account).
-    //click on create a new template then click on save.
-    emailjs
-      .send(
-        'serviceID', // paste your ServiceID here (you'll get one when your service is created).
-        'templateID', // paste your TemplateID here (you'll find it under email templates).
-        {
-          from_name: form.name,
-          to_name: 'YourName', // put your name here.
-          from_email: form.email,
-          to_email: 'youremail@gmail.com', //put your email here.
-          message: form.message,
-        },
-        'yourpublickey' //paste your Public Key here. You'll get it in your profile section.
-      )
-      .then(
-        () => {
-          setLoading(false);
-          alert('Thank you. I will get back to you as soon as possible.');
-
-          setForm({
-            name: '',
-            email: '',
-            message: '',
-          });
-        },
-        (error) => {
-          setLoading(false);
-          console.log(error);
-          alert('Something went wrong. Please try again.');
-        }
-      );
+    // Let Netlify handle the form submission
   };
 
   return (
@@ -71,8 +37,18 @@ const Contact = () => {
 
         <form
           ref={formRef}
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
           onSubmit={handleSubmit}
-          className="mt-10 flex flex-col gap-6 font-poppins">
+          className="mt-10 flex flex-col gap-6 font-poppins"
+        >
+          {/* Netlify hidden input */}
+          <input type="hidden" name="form-name" value="contact" />
+          {/* Honeypot field */}
+          <input type="hidden" name="bot-field" />
+
           <label className="flex flex-col">
             <span className="text-timberWolf font-medium mb-4">Your Name</span>
             <input
@@ -85,6 +61,7 @@ const Contact = () => {
               placeholder:text-taupe
               text-timberWolf rounded-lg outline-none
               border-none font-medium"
+              required
             />
           </label>
           <label className="flex flex-col">
@@ -99,6 +76,7 @@ const Contact = () => {
               placeholder:text-taupe
               text-timberWolf rounded-lg outline-none
               border-none font-medium"
+              required
             />
           </label>
           <label className="flex flex-col">
@@ -115,6 +93,7 @@ const Contact = () => {
               placeholder:text-taupe
               text-timberWolf rounded-lg outline-none
               border-none font-medium resize-none"
+              required
             />
           </label>
 
