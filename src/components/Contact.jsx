@@ -28,18 +28,23 @@ const Contact = () => {
     setError('');
 
     try {
-      // Create form data for Netlify
-      const formData = new FormData();
-      formData.append('form-name', 'contact');
-      formData.append('name', form.name);
-      formData.append('email', form.email);
-      formData.append('message', form.message);
+      // Encode form data for Netlify
+      const encode = (data) => {
+        return Object.keys(data)
+          .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+          .join("&");
+      };
 
       // Submit to Netlify
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData).toString(),
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode({
+          "form-name": "contact",
+          name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
       });
 
       if (response.ok) {
