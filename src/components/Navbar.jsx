@@ -49,7 +49,7 @@ const Navbar = () => {
         </ul>
 
         {/* mobile */}
-        <div className="sm:hidden flex flex-1 w-screen justify-end items-center">
+        {/* <div className="sm:hidden flex flex-1 w-screen justify-end items-center">
           {toggle ? (
             <div
               className={`p-6 bg-flashWhite opacity-[0.98] absolute 
@@ -92,7 +92,7 @@ const Navbar = () => {
               onClick={() => setToggle(!toggle)}
             />
           )}
-        </div>
+        </div> */}
       </div>
     </nav>
   );
